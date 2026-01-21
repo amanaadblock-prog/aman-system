@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aman AdBlock - Ultimate System</title>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Aman AdBlock">
-    <link rel="manifest" href="manifest.json">
-
     <style>
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
         body { background-color: #000; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 0; overflow-x: hidden; }
@@ -17,46 +11,45 @@
         /* Internet Kesilende Ekran */
         #offline-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.98); color: #ff0000; z-index: 10000;
+            background: rgba(40, 0, 0, 0.98); color: #ff0000; z-index: 10000;
             justify-content: center; align-items: center; flex-direction: column;
+            border: 5px solid #ff0000; box-sizing: border-box;
         }
-        .offline-box { border: 2px solid #ff0000; padding: 30px; background: #000; }
 
-        /* Haýal Akýan Duýduryş */
         .header-warning {
-            background: rgba(220, 0, 0, 0.9); color: white; padding: 15px 0; font-size: 14px; font-weight: bold;
-            border-bottom: 3px solid #fff; margin-top: 45px; display: flex; white-space: nowrap; overflow: hidden;
+            background: rgba(220, 0, 0, 0.9); color: white; padding: 15px 0; font-size: 13px; font-weight: bold;
+            border-bottom: 3px solid #fff; margin-top: 10px; display: flex; white-space: nowrap; overflow: hidden;
         }
-        #warning-text { display: inline-block; padding-left: 100%; animation: slideText 75s linear infinite; }
+        #warning-text { display: inline-block; padding-left: 100%; animation: slideText 45s linear infinite; }
         @keyframes slideText { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .container { padding: 20px; max-width: 400px; margin: 20px auto; background: rgba(0, 0, 0, 0.85); border: 1px solid #00ff00; border-radius: 15px; box-shadow: 0 0 25px #00ff00; }
-        .flags span { border: 1px solid #00ff00; padding: 8px; cursor: pointer; font-size: 24px; margin: 5px; display: inline-block; border-radius: 5px; }
+        .flags span { border: 1px solid #00ff00; padding: 8px; cursor: pointer; font-size: 24px; margin: 5px; display: inline-block; border-radius: 5px; transition: 0.3s; }
+        .flags span:hover { background: #00ff00; }
 
-        /* IBAN we Admin */
-        .admin-info { margin: 15px 0; border: 1px dashed #00ff00; padding: 10px; cursor: pointer; }
-        .iban-box { background: rgba(0, 255, 0, 0.1); padding: 10px; margin-top: 5px; font-size: 13px; }
+        /* Nusgalanyp bilinýän bölümler */
+        .admin-info { margin: 15px 0; border: 1px dashed #00ff00; padding: 10px; cursor: pointer; transition: 0.2s; }
+        .admin-info:active { background: rgba(0, 255, 0, 0.2); }
+        .iban-box { background: rgba(0, 255, 0, 0.1); padding: 10px; margin-top: 5px; font-size: 13px; cursor: pointer; border-radius: 5px; transition: 0.2s; }
+        .iban-box:active { background: rgba(0, 255, 0, 0.3); }
 
         .pricing { display: flex; gap: 10px; margin: 15px 0; }
-        .price-card { flex: 1; border: 2px solid #00ff00; padding: 15px; cursor: pointer; transition: 0.3s; background: rgba(0, 255, 0, 0.05); font-size: 14px; }
-        .price-card.selected { background: #00ff00; color: #000; font-weight: bold; }
+        .price-card { flex: 1; border: 2px solid #00ff00; padding: 15px; cursor: pointer; transition: 0.3s; background: rgba(0, 255, 0, 0.05); font-size: 14px; border-radius: 8px; }
+        .price-card.selected { background: #00ff00; color: #000; font-weight: bold; box-shadow: 0 0 20px #00ff00; }
 
-        .btn { border: 2px solid #00ff00; background: none; color: #00ff00; padding: 18px; width: 100%; margin: 10px 0; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; }
+        .btn { border: 2px solid #00ff00; background: none; color: #00ff00; padding: 18px; width: 100%; margin: 10px 0; cursor: pointer; font-weight: bold; font-size: 16px; text-transform: uppercase; border-radius: 8px; }
         .btn-filled { background: #00ff00; color: #000; }
-        .btn-install { background: #ffcc00; color: #000; border: none; display: none; margin-bottom: 20px; }
-
-        .input-field { background: #000; border: 2px solid #ffcc00; color: #ffcc00; padding: 15px; width: 100%; text-align: center; font-size: 20px; margin: 15px 0; outline: none; box-sizing: border-box; }
+        .input-field { background: #000; border: 2px solid #ffcc00; color: #ffcc00; padding: 15px; width: 100%; text-align: center; font-size: 20px; margin: 15px 0; outline: none; box-sizing: border-box; border-radius: 8px; }
         
-        #instruction { display: none; padding-top: 20px; border-top: 1px dashed #00ff00; text-align: left; }
+        #instruction { display: none; padding: 20px; border-top: 1px dashed #00ff00; text-align: left; color: #fff; font-size: 14px; background: rgba(0, 255, 0, 0.05); border-radius: 0 0 15px 15px; }
+        .step { margin-bottom: 12px; color: #00ff00; border-left: 3px solid #ffcc00; padding-left: 10px; }
     </style>
 </head>
-<body ononline="updateNetStatus()" onoffline="updateNetStatus()">
+<body>
 
     <div id="offline-screen">
-        <div class="offline-box">
-            <h3 id="off-title">> SYSTEM OFFLINE</h3>
-            <p id="off-msg">> INTERNET BAGLANYŞYGYNY BARLAŇ</p>
-        </div>
+        <h1 id="off-title">SYSTEM OFFLINE</h1>
+        <p id="off-msg">INTERNET BAGLANYŞYGY ÝOK!</p>
     </div>
 
     <canvas id="matrix"></canvas>
@@ -68,32 +61,30 @@
     </div>
 
     <div class="container">
-        <button id="installApp" class="btn btn-install">📥 INSTALL PROGRAMMA (YÜKLE)</button>
-
         <div class="flags">
-            <span onclick="setLanguage('tk')">🇹🇲</span>
-            <span onclick="setLanguage('tr')">🇹🇷</span>
-            <span onclick="setLanguage('ru')">🇷🇺</span>
-            <span onclick="setLanguage('en')">🇺🇸</span>
+            <span onclick="changeLang('tk')">🇹🇲</span>
+            <span onclick="changeLang('tr')">🇹🇷</span>
+            <span onclick="changeLang('ru')">🇷🇺</span>
+            <span onclick="changeLang('en')">🇺🇸</span>
         </div>
 
         <div class="admin-info" onclick="copyText('AMAN HAYITMURADOV')">
             <h1 style="margin:0; font-size: 20px;">AMAN HAYITMURADOV</h1>
-            <small style="letter-spacing: 3px;">[ CYBER ARCHITECT ]</small>
+            <small>[ CYBER ARCHITECT ]</small>
         </div>
 
         <div class="iban-box" onclick="copyText('TR91 0015 7000 0000 0201 1511 63')">
-            <small id="iban-label" style="color:#888;">PAYMENT GATEWAY (IBAN):</small><br>
+            <small id="iban-label">PAYMENT GATEWAY (IBAN):</small><br>
             <b>TR91 0015 7000 0000 0201 1511 63</b>
         </div>
 
         <div id="plan-label" style="font-size: 12px; margin-top: 15px;">PAKET SAÝLAŇ:</div>
         <div class="pricing">
-            <div class="price-card" onclick="selectPlan('1 MONTH', this)">
-                <span class="m-txt">1 AÝ</span><br><b>200 TL</b>
+            <div class="price-card" id="p1" onclick="selectPlan('1 AÝ / 100 TL', this)">
+                <span id="txt-month">1 AÝ</span><br><b>100 TL</b>
             </div>
-            <div class="price-card" onclick="selectPlan('1 ÝYL', this)">
-                <span class="y-txt">1 ÝYL</span><br><b>1000 TL</b>
+            <div class="price-card" id="p2" onclick="selectPlan('1 ÝYL / 500 TL', this)">
+                <span id="txt-year">1 ÝYL</span><br><b>500 TL</b>
             </div>
         </div>
 
@@ -103,4 +94,111 @@
         <button class="btn btn-filled" id="start-btn" onclick="verifyCode()">ULGAMY IŞLET</button>
 
         <div id="instruction">
-            <p style="color: #ffcc00; text-align: center;">✓ ACCESS GRANTED</p>
+            <h3 style="color: #ffcc00; text-align: center;">✓ ACCESS GRANTED</h3>
+            <p id="ins-1" class="step">1. Sazlamalara (Settings) giriň.</p>
+            <p id="ins-2" class="step">2. "Private DNS" ýa-da "Göni DNS" diýip gözlediň.</p>
+            <p id="ins-3" class="step">3. Şuny ýazyň: <b style="color:#fff;">dns.adguard.com</b></p>
+            <p id="ins-4" class="step">4. Ýatda saklaň (Save). Reklamalar öçürildi!</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedPlan = "";
+        let currentLang = "tk";
+        const myWhatsApp = "99364041065"; 
+
+        const langData = {
+            tk: { offT: "SYSTEM OFFLINE", offM: "INTERNET BAGLANYŞYGY ÝOK!", iban: "TÖLEG SALGYSY (IBAN):", plan: "TARIF SAÝLAŇ:", month: "1 AÝ", year: "1 ÝYL", wa: "TÖLEG ETDIM (WHATSAPP)", start: "ULGAMY IŞLET", input: "KODY ÝAZYŇ", alertPlan: "Haýsy paketi saýlanyňyzy görkeziň!", copy: "Nusgalandy!", ins1: "1. Sazlamalara (Settings) giriň.", ins2: "2. 'Private DNS' ýa-da 'Göni DNS' gözlediň.", ins4: "4. Ýatda saklaň. Reklamalar öçürildi!" },
+            tr: { offT: "SİSTEM ÇEVRİMDIŞI", offM: "İNTERNET BAĞLANTISI YOK!", iban: "ÖDEME ADRESİ (IBAN):", plan: "PAKET SEÇİN:", month: "1 AY", year: "1 YIL", wa: "ÖDEME YAPTIM (WHATSAPP)", start: "SİSTEMİ ÇALIŞTIR", input: "KODU YAZIN", alertPlan: "Lütfen bir paket seçiniz!", copy: "Kopyalandı!", ins1: "1. Ayarlara girin.", ins2: "2. 'Özel DNS' kısmını bulun.", ins4: "4. Kaydedin. Reklamlar engellendi!" },
+            ru: { offT: "СИСТЕМА ОФФЛАЙН", offM: "НЕТ ИНТЕРНЕТА!", iban: "АДРЕС ОПЛАТЫ (IBAN):", plan: "ВЫБЕРИТЕ ПАКЕТ:", month: "1 МЕС", year: "1 ГОД", wa: "Я ОПЛАТИЛ (WHATSAPP)", start: "ЗАПУСТИТЬ СИСТЕМУ", input: "ВВЕДИТЕ КОД", alertPlan: "Пожалуйста, выберите пакет!", copy: "Скопировано!", ins1: "1. Войдите в Настройки.", ins2: "2. Найдите 'Частный DNS'.", ins4: "4. Сохраните. Реклама отключена!" },
+            en: { offT: "SYSTEM OFFLINE", offM: "NO INTERNET CONNECTION!", iban: "PAYMENT GATEWAY (IBAN):", plan: "SELECT PLAN:", month: "1 MONTH", year: "1 YEAR", wa: "I PAID (WHATSAPP)", start: "START SYSTEM", input: "ENTER CODE", alertPlan: "Please select a plan first!", copy: "Copied!", ins1: "1. Open Settings.", ins2: "2. Search for 'Private DNS'.", ins4: "4. Save it. Ads are blocked!" }
+        };
+
+        function changeLang(l) {
+            currentLang = l;
+            document.getElementById('off-title').innerText = langData[l].offT;
+            document.getElementById('off-msg').innerText = langData[l].offM;
+            document.getElementById('iban-label').innerText = langData[l].iban;
+            document.getElementById('plan-label').innerText = langData[l].plan;
+            document.getElementById('txt-month').innerText = langData[l].month;
+            document.getElementById('txt-year').innerText = langData[l].year;
+            document.getElementById('wa-btn').innerText = langData[l].wa;
+            document.getElementById('start-btn').innerText = langData[l].start;
+            document.getElementById('dns-code').placeholder = langData[l].input;
+            document.getElementById('ins-1').innerText = langData[l].ins1;
+            document.getElementById('ins-2').innerText = langData[l].ins2;
+            document.getElementById('ins-4').innerText = langData[l].ins4;
+        }
+
+        function selectPlan(p, el) {
+            selectedPlan = p;
+            document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function goToWhatsApp() {
+            if(!selectedPlan) {
+                alert(langData[currentLang].alertPlan);
+                return;
+            }
+            let msg = `Salam Aman, men töleg etdim. Saýlanan paket: ${selectedPlan}. Maňa DNS koduny ugradyp bilersiňizmi?`;
+            window.open(`https://wa.me/${myWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function verifyCode() {
+            let code = document.getElementById('dns-code').value;
+            if(code.toUpperCase() === "AMAN2026") { 
+                document.getElementById('instruction').style.display = 'block';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            } else {
+                alert("Ýalňyş kod! / Wrong Code!");
+            }
+        }
+
+        // NUSGALAMA FUNKSIÝASY (Adyňyz we IBAN üçin)
+        function copyText(t) {
+            const tempInput = document.createElement("input");
+            tempInput.value = t;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            // Habardar etmek
+            alert(langData[currentLang].copy + " " + t);
+        }
+
+        function updateStatus() {
+            if(navigator.onLine) {
+                document.getElementById('offline-screen').style.display = "none";
+            } else {
+                document.getElementById('offline-screen').style.display = "flex";
+            }
+        }
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+        updateStatus();
+
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = "01010101ABCDEFHIJKLMNOPRSTUVWXYZ";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 33);
+    </script>
+</body>
+</html>
