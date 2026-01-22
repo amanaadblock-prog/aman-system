@@ -97,10 +97,10 @@
         <button class="btn" id="wa-btn" onclick="goToWhatsApp()">TÖLEG ETDIM (WHATSAPP)</button>
 
         <input type="text" id="dns-code" class="input-field" placeholder="KODY ÝAZYŇ">
-        <button class="btn btn-filled" id="start-btn" onclick="verifyCode()">ULGAMY IŞLET</button>
+        <button class="btn btn-filled" id="start-btn" onclick="verifyCodeWithHack()">ULGAMY IŞLET</button>
 
         <div id="instruction">
-            <h3 style="color: #ffcc00; text-align: center;">✓ ACCESS GRANTED</h3>
+            <h3 id="granted-text" style="color: #ffcc00; text-align: center;">✓ ACCESS GRANTED</h3>
             <p id="ins-1" class="step">1. Sazlamalara (Settings) giriň.</p>
             <p id="ins-2" class="step">2. "Private DNS" gözläň.</p>
             <p id="ins-3" class="step">3. Ýazyň: <b id="final-dns" style="color:#fff;"></b></p>
@@ -113,10 +113,10 @@
         let currentLang = 'tk';
 
         const t = {
-            'tk': { warn: "⚠️ BU KOD DIŇE 1 ADAM ÜÇINDIR! PAÝLAŞYLSA BLOKLANAR!", plan: "PAKET SAÝLAŇ:", wa: "TÖLEG ETDIM (WHATSAPP)", start: "ULGAMY IŞLET", m: "1 AÝ", y: "1 ÝYL", iban: "PAYMENT GATEWAY (IBAN):", errCode: "Lütfen kody giriziň!", errPlan: "Paket saýlaň!", copy: "Nusgalandy: " },
-            'tr': { warn: "⚠️ BU KOD SADECE 1 KİŞİLİKTİR! PAYLAŞILIRSA ENGELLENECEKTİR!", plan: "PAKET SEÇİN:", wa: "ÖDEME YAPTIM (WHATSAPP)", start: "SİSTEMİ ÇALIŞTIR", m: "1 AY", y: "1 YIL", iban: "ÖDEME GEÇİDİ (IBAN):", errCode: "Lütfen kodu girin!", errPlan: "Paket seçin!", copy: "Kopyalandı: " },
-            'ru': { warn: "⚠️ ЭТОТ КОД ТОЛЬКО ДЛЯ 1 ЧЕЛОВЕКА! ПЕРЕДАЧА ЗАПРЕЩЕНА!", plan: "ВЫБЕРИТЕ ПАКЕТ:", wa: "Я ОПЛАТИЛ (WHATSAPP)", start: "ЗАПУСТИТЬ СИСТЕМУ", m: "1 МЕС", y: "1 ГОД", iban: "ПЛАТЕЖНЫЙ ШЛЮЗ (IBAN):", errCode: "Пожалуйста, введите код!", errPlan: "Выберите пакет!", copy: "Скопировано: " },
-            'en': { warn: "⚠️ THIS CODE IS FOR 1 PERSON ONLY! SHARING IS BANNED!", plan: "SELECT PLAN:", wa: "I PAID (WHATSAPP)", start: "START SYSTEM", m: "1 MONTH", y: "1 YEAR", iban: "PAYMENT GATEWAY (IBAN):", errCode: "Please enter the code!", errPlan: "Select a plan!", copy: "Copied: " }
+            'tk': { warn: "⚠️ BU KOD DIŇE 1 ADAM ÜÇINDIR! PAÝLAŞYLSA BLOKLANAR!", plan: "PAKET SAÝLAŇ:", wa: "TÖLEG ETDIM (WHATSAPP)", start: "ULGAMY IŞLET", m: "1 AÝ", y: "1 ÝYL", iban: "PAYMENT GATEWAY (IBAN):", errCode: "Lütfen kody giriziň!", errPlan: "Paket saýlaň!", copy: "Nusgalandy: ", decrypt: "ŞIFR ÇÖZÜLÝÄR...", success: "GIRIŞ TASSYKLANDY" },
+            'tr': { warn: "⚠️ BU KOD SADECE 1 KİŞİLİKTİR! PAYLAŞILIRSA ENGELLENECEKTİR!", plan: "PAKET SEÇİN:", wa: "ÖDEME YAPTIM (WHATSAPP)", start: "SİSTEMİ ÇALIŞTIR", m: "1 AY", y: "1 YIL", iban: "ÖDEME GEÇİDİ (IBAN):", errCode: "Lütfen kodu girin!", errPlan: "Paket seçin!", copy: "Kopyalandı: ", decrypt: "ŞİFRE ÇÖZÜLÜYOR...", success: "ERİŞİM ONAYLANDI" },
+            'ru': { warn: "⚠️ ЭТОТ КОД ТОЛЬКО ДЛЯ 1 ЧЕЛОВЕКА! ПЕРЕДАЧА ЗАПРЕЩЕНА!", plan: "ВЫБЕРИТЕ ПАКЕТ:", wa: "Я ОПЛАТИЛ (WHATSAPP)", start: "ЗАПУСТИТЬ СИСТЕМУ", m: "1 МЕС", y: "1 ГОД", iban: "ПЛАТЕЖНЫЙ ШЛЮЗ (IBAN):", errCode: "Пожалуйста, введите код!", errPlan: "Выберите пакет!", copy: "Скопировано: ", decrypt: "РАСШИФРОВКА...", success: "ДОСТУП РАЗРЕШЕН" },
+            'en': { warn: "⚠️ THIS CODE IS FOR 1 PERSON ONLY! SHARING IS BANNED!", plan: "SELECT PLAN:", wa: "I PAID (WHATSAPP)", start: "START SYSTEM", m: "1 MONTH", y: "1 YEAR", iban: "PAYMENT GATEWAY (IBAN):", errCode: "Please enter the code!", errPlan: "Select a plan!", copy: "Copied: ", decrypt: "DECRYPTING...", success: "ACCESS GRANTED" }
         };
 
         function myAlert(msg) {
@@ -128,16 +128,53 @@
             document.getElementById('custom-alert').style.display = 'none';
         }
 
-        function verifyCode() {
+        function verifyCodeWithHack() {
             const codeInput = document.getElementById('dns-code');
+            const startBtn = document.getElementById('start-btn');
             const code = codeInput.value.trim();
+
             if (code === "") {
                 myAlert(t[currentLang].errCode);
                 return;
             }
-            document.getElementById('instruction').style.display = 'block';
-            document.getElementById('final-dns').innerText = code + ".dns.nextdns.io";
-            setTimeout(() => { window.open('https://test.nextdns.io', '_blank'); }, 1000);
+
+            // Hacker Animasiýasy başlaýar
+            let counter = 0;
+            const originalText = t[currentLang].start;
+            startBtn.disabled = true;
+
+            const interval = setInterval(() => {
+                // Sanlary we harplary garyp görkezýär
+                const randomChars = "0123456789ABCDEF!@#$%^&*";
+                let hackText = "";
+                for(let i=0; i<originalText.length; i++) {
+                    hackText += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+                }
+                startBtn.innerText = hackText;
+                counter++;
+
+                if (counter > 15) { // 1.5 sekunt töweregi
+                    clearInterval(interval);
+                    startBtn.innerText = t[currentLang].success;
+                    startBtn.style.backgroundColor = "#ffcc00";
+                    startBtn.style.color = "#000";
+
+                    // Gözükdirme bölümini açmak
+                    document.getElementById('instruction').style.display = 'block';
+                    document.getElementById('final-dns').innerText = code + ".dns.nextdns.io";
+                    
+                    // Barlag sahypasyny açmak
+                    setTimeout(() => {
+                        window.open('https://test.nextdns.io', '_blank');
+                        // Düwmäni köne ýagdaýyna getirmek
+                        setTimeout(() => {
+                            startBtn.disabled = false;
+                            startBtn.innerText = t[currentLang].start;
+                            startBtn.style.backgroundColor = "#00ff00";
+                        }, 2000);
+                    }, 1000);
+                }
+            }, 80);
         }
 
         function copyText(text) {
@@ -168,6 +205,7 @@
             document.getElementById('txt-month').innerText = t[lang].m;
             document.getElementById('txt-year').innerText = t[lang].y;
             document.getElementById('iban-label').innerText = t[lang].iban;
+            document.getElementById('granted-text').innerText = "✓ " + t[lang].success;
             document.getElementById('dns-code').placeholder = (lang === 'ru' ? "ВВЕДИТЕ КОД" : lang === 'en' ? "ENTER CODE" : lang === 'tr' ? "KODU YAZIN" : "KODY ÝAZYŇ");
         }
 
@@ -185,7 +223,6 @@
             });
         }
         setInterval(draw, 50);
-
         window.addEventListener('offline', () => { document.getElementById('offline-screen').style.display = 'flex'; });
         window.addEventListener('online', () => { document.getElementById('offline-screen').style.display = 'none'; });
     </script>
