@@ -8,14 +8,14 @@
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
         body { background-color: #000; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 0; overflow-x: hidden; }
 
-        /* Ýörite Duýduryş Penjiresi (Gmail görünmezligi üçin) */
+        /* Custom Alert (Gmail görünmezligi üçin) */
         #custom-alert {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #111; border: 2px solid #00ff00; padding: 20px; z-index: 20000;
-            width: 280px; text-align: center; border-radius: 10px; box-shadow: 0 0 30px #00ff00;
+            background: #111; border: 2px solid #00ff00; padding: 25px; z-index: 20000;
+            width: 80%; max-width: 300px; text-align: center; border-radius: 10px; box-shadow: 0 0 30px #00ff00;
         }
-        #custom-alert p { margin-bottom: 20px; color: #00ff00; font-weight: bold; }
-        #custom-alert button { background: #00ff00; border: none; padding: 10px 25px; color: #000; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        #custom-alert p { margin-bottom: 20px; color: #00ff00; font-weight: bold; font-size: 16px; }
+        #custom-alert button { background: #00ff00; border: none; padding: 12px 30px; color: #000; cursor: pointer; font-weight: bold; border-radius: 5px; font-size: 16px; }
 
         #offline-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -112,6 +112,13 @@
         let selectedPlan = "";
         let currentLang = 'tk';
 
+        const t = {
+            'tk': { warn: "⚠️ BU KOD DIŇE 1 ADAM ÜÇINDIR! PAÝLAŞYLSA BLOKLANAR!", plan: "PAKET SAÝLAŇ:", wa: "TÖLEG ETDIM (WHATSAPP)", start: "ULGAMY IŞLET", m: "1 AÝ", y: "1 ÝYL", iban: "PAYMENT GATEWAY (IBAN):", errCode: "Lütfen kody giriziň!", errPlan: "Paket saýlaň!", copy: "Nusgalandy: " },
+            'tr': { warn: "⚠️ BU KOD SADECE 1 KİŞİLİKTİR! PAYLAŞILIRSA ENGELLENECEKTİR!", plan: "PAKET SEÇİN:", wa: "ÖDEME YAPTIM (WHATSAPP)", start: "SİSTEMİ ÇALIŞTIR", m: "1 AY", y: "1 YIL", iban: "ÖDEME GEÇİDİ (IBAN):", errCode: "Lütfen kodu girin!", errPlan: "Paket seçin!", copy: "Kopyalandı: " },
+            'ru': { warn: "⚠️ ЭТОТ КОД ТОЛЬКО ДЛЯ 1 ЧЕЛОВЕКА! ПЕРЕДАЧА ЗАПРЕЩЕНА!", plan: "ВЫБЕРИТЕ ПАКЕТ:", wa: "Я ОПЛАТИЛ (WHATSAPP)", start: "ЗАПУСТИТЬ СИСТЕМУ", m: "1 МЕС", y: "1 ГОД", iban: "ПЛАТЕЖНЫЙ ШЛЮЗ (IBAN):", errCode: "Пожалуйста, введите код!", errPlan: "Выберите пакет!", copy: "Скопировано: " },
+            'en': { warn: "⚠️ THIS CODE IS FOR 1 PERSON ONLY! SHARING IS BANNED!", plan: "SELECT PLAN:", wa: "I PAID (WHATSAPP)", start: "START SYSTEM", m: "1 MONTH", y: "1 YEAR", iban: "PAYMENT GATEWAY (IBAN):", errCode: "Please enter the code!", errPlan: "Select a plan!", copy: "Copied: " }
+        };
+
         function myAlert(msg) {
             document.getElementById('alert-msg').innerText = msg;
             document.getElementById('custom-alert').style.display = 'block';
@@ -122,9 +129,10 @@
         }
 
         function verifyCode() {
-            const code = document.getElementById('dns-code').value.trim();
+            const codeInput = document.getElementById('dns-code');
+            const code = codeInput.value.trim();
             if (code === "") {
-                myAlert(currentLang === 'tk' ? "Lütfen kody giriziň!" : "Lütfen kod girin!");
+                myAlert(t[currentLang].errCode);
                 return;
             }
             document.getElementById('instruction').style.display = 'block';
@@ -134,7 +142,7 @@
 
         function copyText(text) {
             navigator.clipboard.writeText(text);
-            myAlert("Nusgalandy: " + text);
+            myAlert(t[currentLang].copy + text);
         }
 
         function selectPlan(plan, element) {
@@ -145,8 +153,7 @@
 
         function goToWhatsApp() {
             if(!selectedPlan) { 
-                const msgs = {'tk':"Paket saýlaň!", 'tr':"Paket seçin!", 'ru':"Выберите пакет!", 'en':"Select plan!"};
-                myAlert(msgs[currentLang]); 
+                myAlert(t[currentLang].errPlan); 
                 return; 
             }
             window.location.href = "https://wa.me/905000000000?text=Salam, Paket: " + selectedPlan;
@@ -154,12 +161,6 @@
 
         function changeLang(lang) {
             currentLang = lang;
-            const t = {
-                'tk': { warn: "⚠️ BU KOD DIŇE 1 ADAM ÜÇINDIR! PAÝLAŞYLSA BLOKLANAR!", plan: "PAKET SAÝLAŇ:", wa: "TÖLEG ETDIM (WHATSAPP)", start: "ULGAMY IŞLET", m: "1 AÝ", y: "1 ÝYL", iban: "PAYMENT GATEWAY (IBAN):" },
-                'tr': { warn: "⚠️ BU KOD SADECE 1 KİŞİLİKTİR! PAYLAŞILIRSA ENGELLENECEKTİR!", plan: "PAKET SEÇİN:", wa: "ÖDEME YAPTIM (WHATSAPP)", start: "SİSTEMİ ÇALIŞTIR", m: "1 AY", y: "1 YIL", iban: "ÖDEME GEÇİDİ (IBAN):" },
-                'ru': { warn: "⚠️ ЭТОТ КОД ТОЛЬКО ДЛЯ 1 ЧЕЛОВЕКА! ПЕРЕДАЧА ЗАПРЕЩЕНА!", plan: "ВЫБЕРИТЕ ПАКЕТ:", wa: "Я ОПЛАТИЛ (WHATSAPP)", start: "ЗАПУСТИТЬ СИСТЕМУ", m: "1 МЕС", y: "1 ГОД", iban: "ПЛАТЕЖНЫЙ ШЛЮЗ (IBAN):" },
-                'en': { warn: "⚠️ THIS CODE IS FOR 1 PERSON ONLY! SHARING IS BANNED!", plan: "SELECT PLAN:", wa: "I PAID (WHATSAPP)", start: "START SYSTEM", m: "1 MONTH", y: "1 YEAR", iban: "PAYMENT GATEWAY (IBAN):" }
-            };
             document.getElementById('warning-text').innerText = t[lang].warn + "   " + t[lang].warn;
             document.getElementById('plan-label').innerText = t[lang].plan;
             document.getElementById('wa-btn').innerText = t[lang].wa;
@@ -167,6 +168,7 @@
             document.getElementById('txt-month').innerText = t[lang].m;
             document.getElementById('txt-year').innerText = t[lang].y;
             document.getElementById('iban-label').innerText = t[lang].iban;
+            document.getElementById('dns-code').placeholder = (lang === 'ru' ? "ВВЕДИТЕ КОД" : lang === 'en' ? "ENTER CODE" : lang === 'tr' ? "KODU YAZIN" : "KODY ÝAZYŇ");
         }
 
         const canvas = document.getElementById('matrix');
@@ -183,6 +185,9 @@
             });
         }
         setInterval(draw, 50);
+
+        window.addEventListener('offline', () => { document.getElementById('offline-screen').style.display = 'flex'; });
+        window.addEventListener('online', () => { document.getElementById('offline-screen').style.display = 'none'; });
     </script>
 </body>
 </html>
