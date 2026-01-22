@@ -96,109 +96,76 @@
         <div id="instruction">
             <h3 style="color: #ffcc00; text-align: center;">✓ ACCESS GRANTED</h3>
             <p id="ins-1" class="step">1. Sazlamalara (Settings) giriň.</p>
-            <p id="ins-2" class="step">2. "Private DNS" ýa-da "Göni DNS" diýip gözlediň.</p>
-            <p id="ins-3" class="step">3. Şuny ýazyň: <b style="color:#fff;">dns.adguard.com</b></p>
-            <p id="ins-4" class="step">4. Ýatda saklaň (Save). Reklamalar öçürildi!</p>
+            <p id="ins-2" class="step">2. "Private DNS" ýa-da "Özel DNS" diýip gözlediň.</p>
+            <p id="ins-3" class="step">3. Şu aşakdakyny ýazyň: <b id="dns-final" style="color:#fff;"></b></p>
+            <p id="ins-4" class="step">4. Ýatda saklaň (Save). Barlag sahypasy açylýar...</p>
         </div>
     </div>
 
     <script>
         let selectedPlan = "";
-        let currentLang = "tk";
-        const myWhatsApp = "99364041065"; 
 
-        const langData = {
-            tk: { offT: "SYSTEM OFFLINE", offM: "INTERNET BAGLANYŞYGY ÝOK!", iban: "TÖLEG SALGYSY (IBAN):", plan: "TARIF SAÝLAŇ:", month: "1 AÝ", year: "1 ÝYL", wa: "TÖLEG ETDIM (WHATSAPP)", start: "ULGAMY IŞLET", input: "KODY ÝAZYŇ", alertPlan: "Haýsy paketi saýlanyňyzy görkeziň!", copy: "Nusgalandy!", ins1: "1. Sazlamalara (Settings) giriň.", ins2: "2. 'Private DNS' ýa-da 'Göni DNS' gözlediň.", ins4: "4. Ýatda saklaň. Reklamalar öçürildi!" },
-            tr: { offT: "SİSTEM ÇEVRİMDIŞI", offM: "İNTERNET BAĞLANTISI YOK!", iban: "ÖDEME ADRESİ (IBAN):", plan: "PAKET SEÇİN:", month: "1 AY", year: "1 YIL", wa: "ÖDEME YAPTIM (WHATSAPP)", start: "SİSTEMİ ÇALIŞTIR", input: "KODU YAZIN", alertPlan: "Lütfen bir paket seçiniz!", copy: "Kopyalandı!", ins1: "1. Ayarlara girin.", ins2: "2. 'Özel DNS' kısmını bulun.", ins4: "4. Kaydedin. Reklamlar engellendi!" },
-            ru: { offT: "СИСТЕМА ОФФЛАЙН", offM: "НЕТ ИНТЕРНЕТА!", iban: "АДРЕС ОПЛАТЫ (IBAN):", plan: "ВЫБЕРИТЕ ПАКЕТ:", month: "1 МЕС", year: "1 ГОД", wa: "Я ОПЛАТИЛ (WHATSAPP)", start: "ЗАПУСТИТЬ СИСТЕМУ", input: "ВВЕДИТЕ КОД", alertPlan: "Пожалуйста, выберите пакет!", copy: "Скопировано!", ins1: "1. Войдите в Настройки.", ins2: "2. Найдите 'Частный DNS'.", ins4: "4. Сохраните. Реклама отключена!" },
-            en: { offT: "SYSTEM OFFLINE", offM: "NO INTERNET CONNECTION!", iban: "PAYMENT GATEWAY (IBAN):", plan: "SELECT PLAN:", month: "1 MONTH", year: "1 YEAR", wa: "I PAID (WHATSAPP)", start: "START SYSTEM", input: "ENTER CODE", alertPlan: "Please select a plan first!", copy: "Copied!", ins1: "1. Open Settings.", ins2: "2. Search for 'Private DNS'.", ins4: "4. Save it. Ads are blocked!" }
-        };
-
-        function changeLang(l) {
-            currentLang = l;
-            document.getElementById('off-title').innerText = langData[l].offT;
-            document.getElementById('off-msg').innerText = langData[l].offM;
-            document.getElementById('iban-label').innerText = langData[l].iban;
-            document.getElementById('plan-label').innerText = langData[l].plan;
-            document.getElementById('txt-month').innerText = langData[l].month;
-            document.getElementById('txt-year').innerText = langData[l].year;
-            document.getElementById('wa-btn').innerText = langData[l].wa;
-            document.getElementById('start-btn').innerText = langData[l].start;
-            document.getElementById('dns-code').placeholder = langData[l].input;
-            document.getElementById('ins-1').innerText = langData[l].ins1;
-            document.getElementById('ins-2').innerText = langData[l].ins2;
-            document.getElementById('ins-4').innerText = langData[l].ins4;
+        function verifyCode() {
+            const code = document.getElementById('dns-code').value.trim();
+            if (code === "") {
+                alert("Lütfen kody giriziň!");
+                return;
+            }
+            // Gözükdirme bölümini açmak we kody ýazmak
+            document.getElementById('instruction').style.display = 'block';
+            document.getElementById('dns-final').innerText = code + ".dns.nextdns.io";
+            
+            // Barlag saýtyna gönükdirmek
+            setTimeout(() => {
+                window.open('https://test.nextdns.io', '_blank');
+            }, 1500);
         }
 
-        function selectPlan(p, el) {
-            selectedPlan = p;
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert("Nusgalandy: " + text);
+        }
+
+        function selectPlan(plan, element) {
+            selectedPlan = plan;
             document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
+            element.classList.add('selected');
         }
 
         function goToWhatsApp() {
-            if(!selectedPlan) {
-                alert(langData[currentLang].alertPlan);
-                return;
-            }
-            let msg = `Salam Aman, men töleg etdim. Saýlanan paket: ${selectedPlan}. Maňa DNS koduny ugradyp bilersiňizmi?`;
-            window.open(`https://wa.me/${myWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
+            if(!selectedPlan) { alert("Lütfen paket saýlaň!"); return; }
+            window.location.href = "https://wa.me/905000000000?text=Salam, men töleg etdim. Paket: " + selectedPlan;
         }
 
-        function verifyCode() {
-            let code = document.getElementById('dns-code').value;
-            if(code.toUpperCase() === "AMAN2026") { 
-                document.getElementById('instruction').style.display = 'block';
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            } else {
-                alert("Ýalňyş kod! / Wrong Code!");
-            }
-        }
-
-        // NUSGALAMA FUNKSIÝASY (Adyňyz we IBAN üçin)
-        function copyText(t) {
-            const tempInput = document.createElement("input");
-            tempInput.value = t;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-            
-            // Habardar etmek
-            alert(langData[currentLang].copy + " " + t);
-        }
-
-        function updateStatus() {
-            if(navigator.onLine) {
-                document.getElementById('offline-screen').style.display = "none";
-            } else {
-                document.getElementById('offline-screen').style.display = "flex";
-            }
-        }
-        window.addEventListener('online', updateStatus);
-        window.addEventListener('offline', updateStatus);
-        updateStatus();
-
+        // Matrix Fon Efekti
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const chars = "01010101ABCDEFHIJKLMNOPRSTUVWXYZ";
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
-        function draw() {
+        function drawMatrix() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0F0";
+            ctx.fillStyle = "#00ff00";
             ctx.font = fontSize + "px monospace";
             for (let i = 0; i < drops.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                 if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
-        setInterval(draw, 33);
+        setInterval(drawMatrix, 50);
+
+        function changeLang(lang) {
+            // Dil üýtgetmek kodlaryňyz bar bolsa şu ýere goşuň
+        }
+
+        window.addEventListener('offline', () => { document.getElementById('offline-screen').style.display = 'flex'; });
+        window.addEventListener('online', () => { document.getElementById('offline-screen').style.display = 'none'; });
     </script>
 </body>
 </html>
